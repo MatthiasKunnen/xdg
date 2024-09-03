@@ -87,3 +87,16 @@ Name=Hello
 		t.Fatalf("Correct file with newlines should be recognized as a desktop file")
 	}
 }
+
+func TestMagicIsDesktopFileSuccessWithNonUtf8InComment(t *testing.T) {
+	isDesktopFile, err := MagicIsDesktopFile(strings.NewReader(
+		"# Invalid UTF8 \xD8\x00\n[Desktop Entry]\nName=Hello\n",
+	))
+	if err != nil {
+		t.Fatalf("Invalid UTF-8 in comments should not result in an error: %v", err)
+	}
+
+	if !isDesktopFile {
+		t.Fatalf("Invalid UTF-8 in comments should not disqualify desktop file")
+	}
+}

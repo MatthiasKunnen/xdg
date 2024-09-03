@@ -11,10 +11,11 @@ import (
 
 const (
 	magicDefault = iota
-	magicSkipUntilLf
+	magicToCommentEnd
 )
 
 // MagicIsDesktopFile returns true if the content is likely a desktop file.
+// This can be used to do MIME checking of unknown content.
 // The content is checked according to the [desktop entry format] spec.
 //
 // [desktop entry format]: https://specifications.freedesktop.org/desktop-entry-spec/1.5/basic-format.html
@@ -43,6 +44,10 @@ func MagicIsDesktopFile(reader io.Reader) (bool, error) {
 		switch {
 		case readRune == unicode.ReplacementChar:
 			// Desktop file must be UTF-8
+			if status == magicToCommentEnd {
+				// But nonsense in comments doesn't matter
+				continue
+			}
 			return false, nil
 		case err != nil:
 			return false, nil
@@ -52,7 +57,7 @@ func MagicIsDesktopFile(reader io.Reader) (bool, error) {
 		case magicDefault:
 			switch readRune {
 			case '#':
-				status = magicSkipUntilLf
+				status = magicToCommentEnd
 				continue
 			case '\n':
 				continue
@@ -67,7 +72,7 @@ func MagicIsDesktopFile(reader io.Reader) (bool, error) {
 			default:
 				return false, nil
 			}
-		case magicSkipUntilLf:
+		case magicToCommentEnd:
 			if readRune == '\n' {
 				status = magicDefault
 			}
@@ -77,6 +82,7 @@ func MagicIsDesktopFile(reader io.Reader) (bool, error) {
 }
 
 // MagicIsDesktopFilePath returns true if the file at the given path is likely a desktop file.
+// This can be used to do MIME checking of unknown files.
 // The file is checked according to the [desktop entry spec].
 //
 // [desktop entry spec]: https://specifications.freedesktop.org/desktop-entry-spec/1.5/basic-format.html
