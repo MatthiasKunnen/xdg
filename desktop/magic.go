@@ -20,7 +20,7 @@ const (
 //
 // [desktop entry format]: https://specifications.freedesktop.org/desktop-entry-spec/1.5/basic-format.html
 func MagicIsDesktopFile(reader io.Reader) (bool, error) {
-	expectedEntry := "Desktop Entry]"
+	expectedEntry := requiredGroupHeader[1:]
 	utf8BomHeader := []byte{0xEF, 0xBB, 0xBF}
 
 	r := bufio.NewReader(reader)

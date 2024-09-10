@@ -5,10 +5,13 @@ import (
 	"regexp"
 )
 
-type LocaleString struct {
-	Default   string
-	Localized map[string]string
+type localized[T any] struct {
+	Default   T
+	Localized map[string]T
 }
+
+type LocaleString = localized[string]
+type LocaleStrings = localized[[]string]
 
 var localeStringRegex = regexp.MustCompile(
 	"([a-z]{2,})(?:_([A-Z]{2}))?(?:\\.[a-zA-Z0-9-]+)?(?:@(.+))?$",
@@ -20,7 +23,7 @@ var localeStringRegex = regexp.MustCompile(
 // @MODIFIER may be omitted.
 //
 // [Localized values for keys]: https://specifications.freedesktop.org/desktop-entry-spec/1.5/localized-keys.html
-func (s *LocaleString) ToLocale(locale string) string {
+func (s *localized[T]) ToLocale(locale string) T {
 	matches := localeStringRegex.FindStringSubmatch(locale)
 
 	if matches == nil {
@@ -48,8 +51,18 @@ func (s *LocaleString) ToLocale(locale string) string {
 	checks = append(checks, lang)
 
 	for _, matchedKey := range checks {
-		if s.Localized[matchedKey] != "" {
-			return s.Localized[matchedKey]
+		maybe := s.Localized[matchedKey]
+		switch v := any(maybe).(type) {
+		case string:
+			if v != "" {
+				return maybe
+			}
+		case []string:
+			if v != nil && len(v) > 0 {
+				return maybe
+			}
+		default:
+			panic("unsupported type")
 		}
 	}
 
