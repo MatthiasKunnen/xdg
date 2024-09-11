@@ -47,7 +47,7 @@ func (m IdPathMap) LoadById(desktopId string) (*Entry, string, error) {
 	}
 
 	for _, path := range m[desktopId] {
-		parsed, err := loadFile(path)
+		parsed, err := LoadFile(path)
 		if err != nil {
 			log.Printf("%v. Skipping\n", err)
 			continue
@@ -152,7 +152,7 @@ func LoadById(desktopId string) (*Entry, string, error) {
 				continue
 			}
 
-			parsed, err := loadFile(path)
+			parsed, err := LoadFile(path)
 			if err != nil {
 				log.Printf("%v. Skipping\n", err)
 				continue
@@ -165,11 +165,11 @@ func LoadById(desktopId string) (*Entry, string, error) {
 	return nil, "", nil
 }
 
-func loadFile(path string) (*Entry, error) {
+func LoadFile(path string) (*Entry, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"loadFile: failed to open desktop file '%s'. %w",
+			"LoadFile: failed to open desktop file '%s'. %w",
 			path,
 			err,
 		)
@@ -180,7 +180,7 @@ func loadFile(path string) (*Entry, error) {
 
 	if err != nil {
 		return nil, fmt.Errorf(
-			"loadFile: failed to parse desktop file '%s'. %w",
+			"LoadFile: failed to parse desktop file '%s'. %w",
 			path,
 			err,
 		)
