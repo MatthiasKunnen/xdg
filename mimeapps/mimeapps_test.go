@@ -1,8 +1,10 @@
 package mimeapps
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/MatthiasKunnen/xdg/desktop"
+	"github.com/google/go-cmp/cmp"
 	"log"
 	"os"
 	"path/filepath"
@@ -152,5 +154,24 @@ func TestGetAssociationsS04Precedence(t *testing.T) {
 	actualTextC := associations["text/x-c"]
 	if !slices.Equal(expectedTextC, actualTextC) {
 		t.Errorf("text/x-c, expected: %v, actual: %v", expectedTextC, actualTextC)
+	}
+}
+
+func TestGetPreferredApplicationsS05Regression(t *testing.T) {
+	// This test is meant to catch future regressions. Its accuracy at time of writing is unchecked.
+	mimeappsLists, idPathMap := getScenarioMimeapps("scenario05", t)
+	associations := GetPreferredApplications(mimeappsLists, idPathMap)
+
+	expectedFilePath := filepath.Join("testdata/scenario05/preferred_applications.json")
+	expectedData, err := os.ReadFile(expectedFilePath)
+	if err != nil {
+		t.Fatalf("error reading '%s': %v", expectedFilePath, err)
+	}
+
+	var expected Associations
+	err = json.Unmarshal(expectedData, &expected)
+
+	if !cmp.Equal(associations, expected) {
+		t.Errorf("Scenario 5 wrong output:\n%s", cmp.Diff(expected, associations))
 	}
 }

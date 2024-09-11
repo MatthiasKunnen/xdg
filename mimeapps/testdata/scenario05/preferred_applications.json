@@ -1,0 +1,348 @@
+{
+	"application/clarisworks": [
+		"libreoffice-writer.desktop"
+	],
+	"application/docbook+xml": [
+		"libreoffice-writer.desktop"
+	],
+	"application/illustrator": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/macwriteii": [
+		"libreoffice-writer.desktop"
+	],
+	"application/msword": [
+		"libreoffice-writer.desktop"
+	],
+	"application/pdf": [
+		"gimp.desktop",
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/postscript": [
+		"gimp.desktop",
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/prs.plucker": [
+		"libreoffice-writer.desktop"
+	],
+	"application/rtf": [
+		"libreoffice-writer.desktop"
+	],
+	"application/visio": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/visio.drawing": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/vnd.apple.pages": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.corel-draw": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/vnd.lotus-wordpro": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.ms-visio.viewer": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/vnd.ms-word": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.ms-word.document.macroEnabled.12": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.ms-word.template.macroEnabled.12": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.ms-works": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text-flat-xml": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text-master": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text-master-template": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text-template": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.oasis.opendocument.text-web": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.template": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.palm": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.stardivision.writer-global": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.sun.xml.writer": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.sun.xml.writer.global": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.sun.xml.writer.template": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vnd.visio": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/vnd.wordperfect": [
+		"libreoffice-writer.desktop"
+	],
+	"application/vsd": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/wordperfect": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-abiword": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-aportisdoc": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-doc": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-extension-txt": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-fictionbook+xml": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-hwp": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-iwork-pages-sffpages": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-mswrite": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-pocket-word": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-shellscript": [
+		"vim.desktop"
+	],
+	"application/x-sony-bbeb": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-starwriter": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-starwriter-global": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-t602": [
+		"libreoffice-writer.desktop"
+	],
+	"application/x-visio": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/x-vsd": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/x-xccx": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/x-xcdt": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/x-xcmx": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"application/x-zerosize": [
+		"org.gnome.gedit.desktop"
+	],
+	"image/avif": [
+		"gimp.desktop"
+	],
+	"image/bmp": [
+		"gimp.desktop"
+	],
+	"image/g3fax": [
+		"gimp.desktop"
+	],
+	"image/gif": [
+		"gimp.desktop"
+	],
+	"image/heic": [
+		"gimp.desktop"
+	],
+	"image/heif": [
+		"gimp.desktop"
+	],
+	"image/jp2": [
+		"gimp.desktop"
+	],
+	"image/jpeg": [
+		"gimp.desktop"
+	],
+	"image/jxl": [
+		"gimp.desktop"
+	],
+	"image/png": [
+		"gimp.desktop"
+	],
+	"image/svg+xml": [
+		"org.inkscape.Inkscape.desktop",
+		"org.gnome.gedit.desktop",
+		"gimp.desktop"
+	],
+	"image/svg+xml-compressed": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/tiff": [
+		"gimp.desktop"
+	],
+	"image/webp": [
+		"gimp.desktop"
+	],
+	"image/x-compressed-xcf": [
+		"gimp.desktop"
+	],
+	"image/x-emf": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/x-eps": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/x-exr": [
+		"gimp.desktop"
+	],
+	"image/x-fits": [
+		"gimp.desktop"
+	],
+	"image/x-gimp-gbr": [
+		"gimp.desktop"
+	],
+	"image/x-gimp-gih": [
+		"gimp.desktop"
+	],
+	"image/x-gimp-pat": [
+		"gimp.desktop"
+	],
+	"image/x-icon": [
+		"gimp.desktop"
+	],
+	"image/x-pcx": [
+		"gimp.desktop"
+	],
+	"image/x-portable-anymap": [
+		"gimp.desktop"
+	],
+	"image/x-portable-bitmap": [
+		"gimp.desktop"
+	],
+	"image/x-portable-graymap": [
+		"gimp.desktop"
+	],
+	"image/x-portable-pixmap": [
+		"gimp.desktop"
+	],
+	"image/x-psd": [
+		"gimp.desktop"
+	],
+	"image/x-psp": [
+		"gimp.desktop"
+	],
+	"image/x-sgi": [
+		"gimp.desktop"
+	],
+	"image/x-sun-raster": [
+		"gimp.desktop"
+	],
+	"image/x-tga": [
+		"gimp.desktop"
+	],
+	"image/x-vsd": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/x-webp": [
+		"gimp.desktop"
+	],
+	"image/x-wmf": [
+		"gimp.desktop",
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/x-xbitmap": [
+		"gimp.desktop"
+	],
+	"image/x-xcdr": [
+		"org.inkscape.Inkscape.desktop"
+	],
+	"image/x-xcf": [
+		"gimp.desktop"
+	],
+	"image/x-xcursor": [
+		"gimp.desktop"
+	],
+	"image/x-xpixmap": [
+		"gimp.desktop"
+	],
+	"image/x-xwindowdump": [
+		"gimp.desktop"
+	],
+	"text/english": [
+		"vim.desktop"
+	],
+	"text/plain": [
+		"org.gnome.gedit.desktop",
+		"vim.desktop",
+		"libreoffice-writer.desktop"
+	],
+	"text/rtf": [
+		"libreoffice-writer.desktop"
+	],
+	"text/x-c": [
+		"vim.desktop"
+	],
+	"text/x-c++": [
+		"vim.desktop"
+	],
+	"text/x-c++hdr": [
+		"vim.desktop"
+	],
+	"text/x-c++src": [
+		"vim.desktop"
+	],
+	"text/x-chdr": [
+		"vim.desktop"
+	],
+	"text/x-csrc": [
+		"vim.desktop"
+	],
+	"text/x-java": [
+		"vim.desktop"
+	],
+	"text/x-makefile": [
+		"vim.desktop"
+	],
+	"text/x-moc": [
+		"vim.desktop"
+	],
+	"text/x-pascal": [
+		"vim.desktop"
+	],
+	"text/x-tcl": [
+		"vim.desktop"
+	],
+	"text/x-tex": [
+		"vim.desktop"
+	]
+}

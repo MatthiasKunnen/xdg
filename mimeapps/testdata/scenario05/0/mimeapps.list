@@ -1,0 +1,7 @@
+[Default Applications]
+text/plain=org.gnome.gedit.desktop;vim.desktop;
+
+[Added Associations]
+text/plain=org.gnome.gedit.desktop;
+image/png=gimp.desktop;org.gnome.eog.desktop;libreoffice-draw.desktop;
+image/svg+xml=org.gnome.gedit.desktop;org.inkscape.Inkscape.desktop;
