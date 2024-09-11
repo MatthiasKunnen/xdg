@@ -27,6 +27,23 @@ import (
 // %F, %U, and %i will always be in separate arguments as the spec dictates.
 type ExecValue [][]execArgPart
 
+func (e ExecValue) CanOpenFiles() bool {
+	for _, parts := range e {
+		for _, part := range parts {
+			if !part.isFieldCode {
+				continue
+			}
+
+			switch part.arg[0] {
+			case 'f', 'F', 'u', 'U':
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 type execArgPart struct {
 	arg         string
 	isFieldCode bool

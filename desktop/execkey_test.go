@@ -226,3 +226,21 @@ func TestExecValue_ToArguments_FCF(t *testing.T) {
 		t.Errorf("Expected: %v; actual: %v", expected, actual)
 	}
 }
+
+func TestExecValue_CanOpenFiles(t *testing.T) {
+	test := func(value string, expected bool) {
+		exec, err := NewExec(value)
+		if err != nil {
+			t.Fatalf("Unexpected error creating exec value: %v", err)
+		}
+
+		if exec.CanOpenFiles() != expected {
+			t.Errorf("CanOpenFiles \"%s\" = %v; want %v", value, !expected, expected)
+		}
+	}
+
+	test(`test %f`, true)
+	test(`test %k %u`, true)
+	test(`test "%f"`, false)
+	test(`test %k`, false)
+}
