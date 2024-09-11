@@ -29,9 +29,12 @@ func GetDirs() []string {
 	return result
 }
 
-// IdPathMap maps a desktop ID, such as vim.desktop, to its desktop file paths, such as
-//   - /home/user/.local/share/applications/vim.desktop
-//   - /usr/share/applications/vim.desktop
+// IdPathMap maps a [Desktop ID], such as libreoffice-writer.desktop, to its desktop file paths,
+// such as:
+//   - /home/user/.local/share/applications/libreoffice-writer.desktop
+//   - /usr/share/applications/libreoffice/writer.desktop
+//
+// [Desktop ID]: https://specifications.freedesktop.org/desktop-entry-spec/1.5/file-naming.html#desktop-file-id
 type IdPathMap map[string][]string
 
 // LoadById loads the first valid desktop file in the list of paths for the given desktop ID and
