@@ -1,0 +1,10 @@
+[Added Associations]
+# libreoffice-writer.desktop is added because it exists at a lower precedence level
+# firefox.desktop is added because it exists at the current level
+text/plain=libreoffice-writer.desktop;firefox.desktop;
+
+# text/csv is not added because four.desktop does not exist
+text/csv=four.desktop
+
+# text/x-c is added because vim.desktop exists on a lower precedence level
+text/x-c=vim.desktop

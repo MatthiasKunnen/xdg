@@ -49,7 +49,7 @@ func (m IdPathMap) LoadById(desktopId string) (*Entry, string, error) {
 	for _, path := range m[desktopId] {
 		parsed, err := LoadFile(path)
 		if err != nil {
-			log.Printf("%v. Skipping\n", err)
+			log.Printf("Failed to load desktop ID %s: %v. Skipping\n", desktopId, err)
 			continue
 		}
 
@@ -163,7 +163,7 @@ func LoadById(desktopId string, locations []string) (*Entry, string, error) {
 
 			parsed, err := LoadFile(path)
 			if err != nil {
-				log.Printf("%v. Skipping\n", err)
+				log.Printf("Failed to load desktop file '%s': %v. Skipping\n", desktopId, err)
 				continue
 			}
 

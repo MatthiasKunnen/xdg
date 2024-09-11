@@ -1,0 +1,4 @@
+[Added Associations]
+# gimp is not added to application/png because its desktop file is not in the current or lower
+# precedence
+application/png=gimp.desktop;

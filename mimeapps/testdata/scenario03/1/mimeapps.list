@@ -1,0 +1,6 @@
+[Added Associations]
+# foo1.desktop should be ignored because foo1 was already processed in higher precedence.
+text/plain=foo1.desktop;
+
+# foo2.desktop should be ignored because foo2.desktop does not exist
+text/csv=foo2.desktop;

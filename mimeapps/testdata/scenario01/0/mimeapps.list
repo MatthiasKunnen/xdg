@@ -1,0 +1,6 @@
+[Added Associations]
+text/plain=foo1.desktop;
+text/csv=foo1.desktop
+
+[Removed Associations]
+text/html=foo1.desktop;
