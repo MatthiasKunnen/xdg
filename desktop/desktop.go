@@ -60,19 +60,13 @@ func (m IdPathMap) LoadById(desktopId string) (*Entry, string, error) {
 }
 
 // GetDesktopFiles returns a map of all desktop IDs and their respective desktop file path that
-// could be found in the standardized locations.
-// The locations are defined in the [Mime app spec].
+// could be found in the given locations.
+// To get the standard locations, use GetDesktopFileLocations.
 // The slice of desktop file paths is in order of highest to lowest precedence.
-//
-// [Mime app spec]: https://specifications.freedesktop.org/mime-apps-spec/1.0.1
-func GetDesktopFiles() (IdPathMap, error) {
+func GetDesktopFiles(locations []string) (IdPathMap, error) {
 	result := make(IdPathMap)
-	locations := []string{basedir.DataHome}
-	locations = append(locations, basedir.DataDirs...)
 
-	for _, baseDir := range locations {
-		dir := filepath.Join(baseDir, "applications")
-
+	for _, dir := range locations {
 		err := filepath.WalkDir(dir, func(path string, entry fs.DirEntry, walkErr error) error {
 			if walkErr != nil {
 				return walkErr
@@ -125,17 +119,32 @@ func GetDesktopFiles() (IdPathMap, error) {
 	return result, nil
 }
 
+// GetDesktopFileLocations returns the directories where desktop files can be found.
+// The locations are defined in the [Mime app spec].
+//
+// [Mime app spec]: https://specifications.freedesktop.org/mime-apps-spec/1.0.1/file.html
+func GetDesktopFileLocations() []string {
+	locations := make([]string, 0)
+	locations = append(locations, filepath.Join(basedir.DataHome, "applications"))
+
+	for _, baseDir := range basedir.DataDirs {
+		locations = append(locations, filepath.Join(baseDir, "applications"))
+	}
+
+	return locations
+}
+
 // LoadById finds the first valid desktop file with the given ID, parses it and returns the result
 // and the path of the file.
+// If locations is nil, GetDesktopFileLocations will be used.
 // If no valid desktop file could be found, error will be nil and path will be an empty string.
 // Example of desktopId: vim.desktop
-func LoadById(desktopId string) (*Entry, string, error) {
-	locations := []string{basedir.DataHome}
-	locations = append(locations, basedir.DataDirs...)
+func LoadById(desktopId string, locations []string) (*Entry, string, error) {
+	if locations == nil {
+		locations = GetDesktopFileLocations()
+	}
 
-	for _, baseDir := range locations {
-		dir := filepath.Join(baseDir, "applications")
-
+	for _, dir := range locations {
 		attempts := map[string]bool{
 			filepath.Join(dir, desktopId): true,
 			// Desktop IDs with hyphens such as foo-bar.desktop can mean foo/bar.desktop
