@@ -165,12 +165,6 @@ type Associations = map[string][]string
 
 // GetAssociations returns all mime-desktop associations created by entries in the
 // [Added Associations] and [Remove Associations] sections and the MimeType in the .desktop files.
-//
-// The following part of the mime apps spec is not implemented:
-//
-// If the addition or removal refers to a desktop file that doesn't exist at this precedence
-// level, or a lower one, then the addition or removal is ignored, even if the desktop
-// file exists in a high-precedence directory.
 func GetAssociations(
 	mimeappsLocations []ListLocation,
 	idPathsMap desktop.IdPathMap,
