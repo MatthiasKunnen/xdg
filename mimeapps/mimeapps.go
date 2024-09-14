@@ -182,8 +182,11 @@ func GetAssociations(
 	for desktopId, paths := range idPathsMap {
 		lowestPrecedence := -1
 
-		for i, mimeappsPath := range mimeappsLocations {
-			dir := filepath.Dir(mimeappsPath.Path)
+		for i, location := range mimeappsLocations {
+			if !location.HasDesktopFiles {
+				continue
+			}
+			dir := filepath.Dir(location.Path)
 
 			for _, path := range paths {
 				if isSubPathAbs(path, dir) {
