@@ -18,6 +18,8 @@ type ListLocation struct {
 
 	// HasDesktopFiles states whether there are any .desktop files to be found in the same directory
 	// as the path.
+	// For mimeapps.list files that are specific to the desktop, e.g. gnome-mimeapps.list, this will
+	// always be false.
 	HasDesktopFiles bool
 }
 
@@ -56,24 +58,24 @@ func addMimeappsLists(
 
 func addMimeappsList(
 	list *[]ListLocation,
-	envValue string,
+	path string,
 	desktop string,
 	subDir string,
 	hasDesktopFiles bool,
 ) {
 	if subDir != "" {
-		envValue = filepath.Join(envValue, subDir)
+		path = filepath.Join(path, subDir)
 	}
 
 	if desktop != "" {
 		*list = append(*list, ListLocation{
-			Path:            filepath.Join(envValue, subDir, desktop+"-mimeapps.list"),
-			HasDesktopFiles: hasDesktopFiles,
+			Path:            filepath.Join(path, desktop+"-mimeapps.list"),
+			HasDesktopFiles: false,
 		})
 	}
 
 	*list = append(*list, ListLocation{
-		Path:            filepath.Join(envValue, subDir, "mimeapps.list"),
+		Path:            filepath.Join(path, "mimeapps.list"),
 		HasDesktopFiles: hasDesktopFiles,
 	})
 }
