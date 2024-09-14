@@ -172,6 +172,22 @@ Name=Firefox\
 	}
 }
 
+func TestParseErrorLineNumberEscape(t *testing.T) {
+	_, err := Parse(strings.NewReader(`
+[Desktop Entry]
+Type=Application
+Name=Firefox\
+`))
+
+	if !errors.Is(err, ErrEscapeIncomplete) {
+		t.Errorf("Expected error, got none")
+	}
+
+	if !strings.Contains(err.Error(), "on line 3,") {
+		t.Errorf("Expected line number 3 in error %v", err)
+	}
+}
+
 func TestParseErrorOnUnterminatedEscape2(t *testing.T) {
 	_, err := Parse(strings.NewReader(`
 [Desktop Entry]

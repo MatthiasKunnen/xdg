@@ -47,7 +47,9 @@ func Parse(reader io.Reader) (*Entry, error) {
 	parseState := parseStateLookingForDEGroup
 	var groupName string
 
+	lineNumber := -1
 	for sc.Scan() {
+		lineNumber++
 		line := strings.TrimRight(sc.Text(), " \t")
 		switch {
 		case len(line) == 0:
@@ -59,7 +61,8 @@ func Parse(reader io.Reader) (*Entry, error) {
 		if parseState == parseStateLookingForDEGroup {
 			if line != requiredGroupHeader {
 				return &entry, fmt.Errorf(
-					"parse failure, expected %s, found %s",
+					"parse failure at line %d, expected %s, found %s",
+					lineNumber,
 					requiredGroupHeader,
 					line,
 				)
@@ -78,7 +81,11 @@ func Parse(reader io.Reader) (*Entry, error) {
 
 			groupName = line[1 : len(line)-1]
 			if seenGroups[groupName] {
-				return &entry, fmt.Errorf("parse failure, duplicate group %s", groupName)
+				return &entry, fmt.Errorf(
+					"parse failure at line %d, duplicate group %s",
+					lineNumber,
+					groupName,
+				)
 			}
 			seenGroups[groupName] = true
 			clear(seenKeys)
@@ -103,23 +110,35 @@ func Parse(reader io.Reader) (*Entry, error) {
 
 		keyValSplit := strings.SplitN(line, "=", 2)
 		if len(keyValSplit) < 2 {
-			return &entry, fmt.Errorf("parse failure, tried to read key-value line but no"+
-				" value could be determined. Line: %s", line)
+			return &entry, fmt.Errorf("parse failure on line %d, tried to read key-value"+
+				" line but no value could be determined. Line: %s", lineNumber, line)
 		}
 
 		key := keyValSplit[0]
 		value := keyValSplit[1]
 
 		if !isValidKey(key) {
-			return &entry, fmt.Errorf("parse failure, invalid key: %s", key)
+			return &entry, fmt.Errorf(
+				"parse failure at line %d, invalid key: %s",
+				lineNumber,
+				key,
+			)
 		}
 
 		if !isValidValue(value) {
-			return &entry, fmt.Errorf("parse failure, invalid value: %s", value)
+			return &entry, fmt.Errorf(
+				"parse failure at line %d, invalid value: %s",
+				lineNumber,
+				value,
+			)
 		}
 
 		if seenKeys[key] {
-			return &entry, fmt.Errorf("parse failure, duplicate key %s", key)
+			return &entry, fmt.Errorf(
+				"parse failure at line %d, duplicate key %s",
+				lineNumber,
+				key,
+			)
 		}
 		seenKeys[key] = true
 
@@ -130,7 +149,8 @@ func Parse(reader io.Reader) (*Entry, error) {
 				list, err := parseList(value)
 				if err != nil {
 					return &entry, fmt.Errorf(
-						"parse failure, error parsing Actions \"%s\": %w",
+						"parse failure on line %d, error parsing Actions \"%s\": %w",
+						lineNumber,
 						value,
 						err,
 					)
@@ -142,7 +162,13 @@ func Parse(reader io.Reader) (*Entry, error) {
 			default:
 				err := applyMainKeyValue(&entry, key, value)
 				if err != nil {
-					return &entry, err
+					return &entry, fmt.Errorf(
+						"parse failure on line %d, error key='%s', value='%s': %w",
+						lineNumber,
+						key,
+						value,
+						err,
+					)
 				}
 			}
 		case currentAction != nil:
@@ -155,7 +181,8 @@ func Parse(reader io.Reader) (*Entry, error) {
 				err := assignLocaleString(&currentAction.Name, locale, value)
 				if err != nil {
 					return &entry, fmt.Errorf(
-						"parse failure, error parsing action.Name %s: %w",
+						"parse failure on line %d, error parsing action.Name %s: %w",
+						lineNumber,
 						value,
 						err,
 					)
@@ -164,7 +191,8 @@ func Parse(reader io.Reader) (*Entry, error) {
 				err := assignIconString(&currentAction.Icon, locale, value)
 				if err != nil {
 					return &entry, fmt.Errorf(
-						"parse failure, error parsing action.Name %s: %w",
+						"parse failure on line %d, error parsing action.Name %s: %w",
+						lineNumber,
 						value,
 						err,
 					)
@@ -173,7 +201,8 @@ func Parse(reader io.Reader) (*Entry, error) {
 				execValue, err := NewExec(value)
 				if err != nil {
 					return &entry, fmt.Errorf(
-						"parse failure, error parsing action.Exec %s: %w",
+						"parse failure on line %d, error parsing action.Exec %s: %w",
+						lineNumber,
 						value,
 						err,
 					)
@@ -187,7 +216,7 @@ func Parse(reader io.Reader) (*Entry, error) {
 	}
 
 	if err := sc.Err(); err != nil {
-		return &entry, fmt.Errorf("failed to parse: %w", err)
+		return &entry, fmt.Errorf("failed reading line on line %d: %w", lineNumber, err)
 	}
 
 	for actionName, hasGroup := range actions {
