@@ -3,6 +3,7 @@ package mimeapps
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MatthiasKunnen/xdg/basedir"
 	"github.com/MatthiasKunnen/xdg/desktop"
 	"github.com/google/go-cmp/cmp"
 	"log"
@@ -24,6 +25,50 @@ func ExampleGetPreferredApplications() {
 
 	for mime, paths := range applications {
 		fmt.Printf("MIME type %s has the following desktop files: %s\n", mime, strings.Join(paths, ":"))
+	}
+}
+
+func overrideEnv(t *testing.T, keyValue map[string]string) {
+	for key, value := range keyValue {
+		originalValue := os.Getenv(key)
+		err := os.Setenv(key, value)
+		if err != nil {
+			t.Errorf("Could not set environment variable %s=%v: %v", key, value, err)
+		}
+		t.Cleanup(func() {
+			_ = os.Setenv(key, originalValue)
+		})
+	}
+	basedir.Reinit()
+	t.Cleanup(func() {
+		basedir.Reinit()
+	})
+}
+
+func TestGetLists(t *testing.T) {
+	overrideEnv(t, map[string]string{
+		"XDG_CONFIG_HOME": "/home/user/.config",
+		"XDG_CONFIG_DIRS": "/etc/xdg",
+		"XDG_DATA_HOME":   "/home/user/.local/share",
+		"XDG_DATA_DIRS":   "/usr/local/share/:/usr/share/",
+	})
+
+	actual := GetLists("gnome")
+	expected := []ListLocation{
+		{Path: "/home/user/.config/gnome-mimeapps.list", HasDesktopFiles: false},
+		{Path: "/home/user/.config/mimeapps.list", HasDesktopFiles: false},
+		{Path: "/etc/xdg/gnome-mimeapps.list", HasDesktopFiles: false},
+		{Path: "/etc/xdg/mimeapps.list", HasDesktopFiles: false},
+		{Path: "/home/user/.local/share/applications/gnome-mimeapps.list", HasDesktopFiles: false},
+		{Path: "/home/user/.local/share/applications/mimeapps.list", HasDesktopFiles: true},
+		{Path: "/usr/local/share/applications/gnome-mimeapps.list", HasDesktopFiles: false},
+		{Path: "/usr/local/share/applications/mimeapps.list", HasDesktopFiles: true},
+		{Path: "/usr/share/applications/gnome-mimeapps.list", HasDesktopFiles: false},
+		{Path: "/usr/share/applications/mimeapps.list", HasDesktopFiles: true},
+	}
+
+	if !cmp.Equal(actual, expected) {
+		t.Errorf("GetLists output does not match:\n%s", cmp.Diff(expected, actual))
 	}
 }
 
