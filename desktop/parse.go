@@ -225,7 +225,7 @@ func Parse(reader io.Reader) (*Entry, error) {
 		}
 
 		return &entry, fmt.Errorf(
-			"parse failure, %w: \"%s\"",
+			"invalid desktop file, %w: \"%s\"",
 			ErrActionHasNoGroup,
 			actionName,
 		)
@@ -236,15 +236,15 @@ func Parse(reader io.Reader) (*Entry, error) {
 	}
 
 	if entry.Name.Default == "" {
-		return &entry, fmt.Errorf("failed to parse: Name field is required")
+		return &entry, fmt.Errorf("invalid desktop file: Name field is required")
 	}
 
 	if entry.Type == "" {
-		return &entry, fmt.Errorf("failed to parse: Type field is required")
+		return &entry, fmt.Errorf("invalid desktop file: Type field is required")
 	}
 
-	if entry.Type == "Link" && !seenKeys["URL"] {
-		return &entry, fmt.Errorf("failed to parse: URL field is required for type Link")
+	if entry.Type == TypeLink && !seenKeys["URL"] {
+		return &entry, fmt.Errorf("invalid desktop file: URL field is required for type Link")
 	}
 
 	if entry.Type == TypeApplication && !entry.DBusActivatable && len(entry.Exec) == 0 {
