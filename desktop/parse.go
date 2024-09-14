@@ -247,6 +247,11 @@ func Parse(reader io.Reader) (*Entry, error) {
 		return &entry, fmt.Errorf("failed to parse: URL field is required for type Link")
 	}
 
+	if entry.Type == TypeApplication && !entry.DBusActivatable && len(entry.Exec) == 0 {
+		return &entry, fmt.Errorf("invalid desktop file: Exec field is required for Type=%s"+
+			" and DBusActivatable=false", TypeApplication)
+	}
+
 	return &entry, nil
 }
 

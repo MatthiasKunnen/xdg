@@ -14,6 +14,7 @@ Type=Application
 Name=Firefox
 Name[nl]=Vuurvos
 Name[nl_BE]=Vúúrvos
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -29,6 +30,40 @@ Name[nl_BE]=Vúúrvos
 		t.Errorf("Name with locale nl_BE is %s, expected Vúúrvos", nlBeName)
 	}
 }
+
+func TestParseMissingExec(t *testing.T) {
+	_, err := Parse(strings.NewReader(`
+[Desktop Entry]
+Type=Application
+Name=Firefox
+`))
+
+	switch {
+	case err == nil:
+		t.Errorf("Parse() did not return an error for missing exec")
+	case strings.Contains(err.Error(), "Exec field is required"):
+	default:
+		t.Errorf("Parse() did not return an error for missing exec")
+	}
+}
+
+func TestParseMissingExecWithDbus(t *testing.T) {
+	_, err := Parse(strings.NewReader(`
+[Desktop Entry]
+Type=Application
+Name=Firefox
+DBusActivatable=true
+`))
+
+	switch {
+	case err == nil:
+	case strings.Contains(err.Error(), "Exec field is required"):
+		t.Errorf("Parse() returned exec field required when DBusActivatable=true should make it not do so")
+	default:
+		t.Errorf("Parse() returned an error for missing exec with DBusActivatable=true")
+	}
+}
+
 func TestParseWithComment(t *testing.T) {
 	result, err := Parse(strings.NewReader(`
 # Test
@@ -38,6 +73,7 @@ func TestParseWithComment(t *testing.T) {
 # Thing
 Type=Application
 Name=Firefox
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -56,6 +92,7 @@ Type=Application
 Name=Firefox
 Name[nl]=Vuurvos
 Name[nl_BE]=Vúúrvos
+Exec=/usr/lib/firefox/firefox %u
 
 [Extra]
 X-Crazy=Hello
@@ -85,6 +122,7 @@ func TestParseKeywords(t *testing.T) {
 Type=Application
 Name=Firefox
 Keywords=browser;Internet;WWW;
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -103,6 +141,7 @@ func TestParseKeywordsNoEolSemicolon(t *testing.T) {
 Type=Application
 Name=Firefox
 Keywords=browser;Internet;WWW
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -123,6 +162,7 @@ Name=Firefox\nAnd\ssons\\
 Keywords=The\nKeyword\;\sfactory;Hey
 Keywords[nl]=\s\n;\;\r\t\\a
 Keywords[cr]=Two\\\\;items
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -165,6 +205,7 @@ func TestParseErrorOnUnterminatedEscape(t *testing.T) {
 [Desktop Entry]
 Type=Application
 Name=Firefox\
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if !errors.Is(err, ErrEscapeIncomplete) {
@@ -177,6 +218,7 @@ func TestParseErrorLineNumberEscape(t *testing.T) {
 [Desktop Entry]
 Type=Application
 Name=Firefox\
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if !errors.Is(err, ErrEscapeIncomplete) {
@@ -194,6 +236,7 @@ func TestParseErrorOnUnterminatedEscape2(t *testing.T) {
 Type=Application
 Name=Firefox
 Keywords=Test\;h\
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if !errors.Is(err, ErrEscapeIncomplete) {
@@ -206,6 +249,7 @@ func TestParseUnescapeStringValue(t *testing.T) {
 [Desktop Entry]
 Type=Application
 Name=Firefox\tTabbed
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if err != nil {
@@ -247,6 +291,7 @@ func TestParse_ActionsWithoutGroup(t *testing.T) {
 Type=Application
 Name=Firefox\tTabbed
 Actions=Gallery
+Exec=/usr/lib/firefox/firefox %u
 `))
 
 	if !errors.Is(err, ErrActionHasNoGroup) {
@@ -260,6 +305,7 @@ func TestParse_Actions(t *testing.T) {
 Type=Application
 Name=Firefox\tTabbed
 Actions=Gallery;
+Exec=/usr/lib/firefox/firefox %u
 
 [Desktop Action Gallery]
 Name=Browse gallery
@@ -304,6 +350,7 @@ func TestParse_MultipleActions(t *testing.T) {
 Type=Application
 Name=Firefox\tTabbed
 Actions=Gallery;Number2
+Exec=/usr/lib/firefox/firefox %u
 
 [Desktop Action Gallery]
 Name=Browse gallery

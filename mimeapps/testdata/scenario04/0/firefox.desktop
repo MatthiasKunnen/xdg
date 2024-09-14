@@ -1,3 +1,4 @@
 [Desktop Entry]
 Type=Application
 Name=Level0
+Exec=/usr/lib/firefox/firefox %u

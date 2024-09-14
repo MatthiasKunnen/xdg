@@ -2,3 +2,4 @@
 Type=Application
 Name=Firefox
 MimeType=text/csv;text/html
+Exec=/usr/lib/firefox/firefox %u

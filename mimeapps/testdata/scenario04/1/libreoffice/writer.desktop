@@ -2,3 +2,4 @@
 Type=Application
 Name=LibreOffice Writer
 MimeType=text/rtf;
+Exec=/usr/lib/firefox/firefox %u
