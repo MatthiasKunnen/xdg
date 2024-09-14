@@ -125,9 +125,9 @@ func Parse(reader io.Reader) (*Entry, error) {
 			)
 		}
 
-		if !isValidValue(value) {
+		if !utf8.ValidString(value) {
 			return &entry, fmt.Errorf(
-				"parse failure at line %d, invalid value: %s",
+				"parse failure at line %d, value is not valid UTF-8: %s",
 				lineNumber,
 				value,
 			)
@@ -300,14 +300,6 @@ func isAsciiNoControl(value string) bool {
 	}
 
 	return true
-}
-
-func isValidValue(value string) bool {
-	if len(value) == 0 {
-		return false
-	}
-
-	return utf8.ValidString(value)
 }
 
 func applyMainKeyValue(entry *Entry, key string, value string) error {
@@ -499,6 +491,11 @@ func parseString(value string) (string, error) {
 }
 
 func assignLocaleString(localeString *LocaleString, locale string, value string) error {
+	if value == "" {
+		// Ignoring empty values is not in the spec but was encountered in virtualbox.desktop
+		return nil
+	}
+
 	unescaped, err := unescapeString(value)
 	if err != nil {
 		return err
@@ -519,6 +516,11 @@ func assignLocaleString(localeString *LocaleString, locale string, value string)
 }
 
 func assignLocaleStrings(localeStrings *LocaleStrings, locale string, value string) error {
+	if value == "" {
+		// Handling not specified in spec
+		return nil
+	}
+
 	list, err := splitEscapedString(value)
 	if err != nil {
 		return err
@@ -538,6 +540,11 @@ func assignLocaleStrings(localeStrings *LocaleStrings, locale string, value stri
 }
 
 func assignIconString(iconString *IconString, locale, value string) error {
+	if value == "" {
+		// Handling not specified in spec
+		return nil
+	}
+
 	unescaped, err := unescapeString(value)
 	if err != nil {
 		return err
@@ -557,6 +564,10 @@ func assignIconString(iconString *IconString, locale, value string) error {
 }
 
 func parseList(value string) ([]string, error) {
+	if value == "" {
+		return []string{}, nil
+	}
+
 	if !isAsciiNoControl(value) {
 		return nil, fmt.Errorf("parseList, value of type string must be ASCII. Got: %s", value)
 	}
@@ -607,6 +618,10 @@ func unescapeString(s string) (string, error) {
 
 // splitEscapedString splits the input string by semicolons that are not escaped.
 func splitEscapedString(s string) ([]string, error) {
+	if s == "" {
+		return []string{}, nil
+	}
+
 	var result []string
 	var current strings.Builder
 	escaped := false

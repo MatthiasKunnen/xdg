@@ -94,6 +94,10 @@ var (
 // NewExec parses the given strings as an Exec key from the Desktop Entry specification.
 // See https://specifications.freedesktop.org/desktop-entry-spec/1.5/exec-variables.html.
 func NewExec(value string) (ExecValue, error) {
+	if value == "" {
+		return nil, fmt.Errorf("error: Exec value is empty")
+	}
+
 	if !isAsciiNoControl(value) {
 		return nil, fmt.Errorf("value of type string must be ASCII. Got: %s", value)
 	}

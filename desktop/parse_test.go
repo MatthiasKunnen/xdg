@@ -218,6 +218,29 @@ Name=Firefox\tTabbed
 	}
 }
 
+func TestParse_EmptyLocaleStringValue(t *testing.T) {
+	// Encountered in virtualbox.desktop.
+	// Handling of empty values is not specified so we'll ignore it.
+	result, err := Parse(strings.NewReader(`
+[Desktop Entry]
+Version=1.0
+Name=Oracle VM VirtualBox
+GenericName=Virtualization Software
+GenericName[de]=Virtualisierung Software
+GenericName[ru]=
+Type=Application
+Exec=VirtualBox %U
+`))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if result.GenericName.ToLocale("ru") != "Virtualization Software" {
+		t.Errorf("Empty localized value should fall back to default")
+	}
+}
+
 func TestParse_ActionsWithoutGroup(t *testing.T) {
 	_, err := Parse(strings.NewReader(`
 [Desktop Entry]
