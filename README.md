@@ -13,3 +13,6 @@ The following specifications are supported:
 - mimeapps
   [pkg docs](https://pkg.go.dev/github.com/MatthiasKunnen/xdg/mimeapps)
   [spec](https://specifications.freedesktop.org/mime-apps-spec/1.0.1)
+- Shared MIME-info
+  [pkg docs](https://pkg.go.dev/github.com/MatthiasKunnen/xdg/sharedmimeinfo)
+  [spec](https://specifications.freedesktop.org/shared-mime-info-spec/0.22/)
