@@ -56,7 +56,7 @@ application/xml2 text/xml`),
 	}
 }
 
-func TestSubclass_BroaderDfs_textPlain(t *testing.T) {
+func TestSubclass_BroaderDfs_nested2(t *testing.T) {
 	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
 		strings.NewReader(`image/svg+xml application/xml
 application/xml application/xml2
@@ -116,6 +116,75 @@ application/svg+xml application/xml`),
 		"inode/directory",
 	}
 	got := s.BroaderDfs("inode/mount-point")
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestSubclass_BroaderDfs_textPlainResultsInOctetStream(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(``),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{
+		"application/octet-stream",
+	}
+	got := s.BroaderDfs("text/plain")
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestSubclass_BroaderDfs_textResultsInTextPlain1(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(`text/foo application/bar`),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{
+		"application/bar",
+		"text/plain",
+		"application/octet-stream",
+	}
+	got := s.BroaderDfs("text/foo")
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestSubclass_BroaderDfs_textResultsInTextPlain2(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(``),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{
+		"text/plain",
+		"application/octet-stream",
+	}
+	got := s.BroaderDfs("text/foo")
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestSubclass_BroaderDfs_octetStreamOnly(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(``),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{}
+	got := s.BroaderDfs("application/octet-stream")
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
 	}

@@ -170,18 +170,28 @@ func (s *Subclass) BroaderDfs(mime string) []string {
 	}
 
 	if _, ok := visited[mimeTextPlain]; !ok {
-		for _, item := range result {
-			if strings.HasPrefix(item, "text/") {
-				result = append(result, mimeTextPlain)
-				break
+		switch {
+		case mime != mimeTextPlain && strings.HasPrefix(mime, "text/"):
+			result = append(result, mimeTextPlain)
+		default:
+			for _, item := range result {
+				if strings.HasPrefix(item, "text/") {
+					result = append(result, mimeTextPlain)
+					break
+				}
 			}
 		}
 	}
 	if _, ok := visited[mimeOctet]; !ok {
-		for _, item := range result {
-			if !strings.HasPrefix(item, "inode/") {
-				result = append(result, mimeOctet)
-				break
+		switch {
+		case mime != mimeOctet && !strings.HasPrefix(mime, "inode/"):
+			result = append(result, mimeOctet)
+		default:
+			for _, item := range result {
+				if !strings.HasPrefix(item, "inode/") {
+					result = append(result, mimeOctet)
+					break
+				}
 			}
 		}
 	}
