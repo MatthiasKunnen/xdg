@@ -483,7 +483,11 @@ func parseBoolean(value string) (bool, error) {
 
 func parseString(value string) (string, error) {
 	if !isAsciiNoControl(value) {
-		return "", fmt.Errorf("parseString, value of type string must be ASCII. Got: %s", value)
+		return "", fmt.Errorf(
+			"parseString, value of type string %w. Got: \"%s\"",
+			ErrAsciiRequired,
+			value,
+		)
 	}
 
 	unescaped, err := unescapeString(value)
@@ -574,7 +578,11 @@ func parseList(value string) ([]string, error) {
 	}
 
 	if !isAsciiNoControl(value) {
-		return nil, fmt.Errorf("parseList, value of type string must be ASCII. Got: %s", value)
+		return nil, fmt.Errorf(
+			"parseList, value of type string %w. Got: \"%s\"",
+			ErrAsciiRequired,
+			value,
+		)
 	}
 
 	return splitEscapedString(value)

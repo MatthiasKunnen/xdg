@@ -155,6 +155,16 @@ func TestNewExec_UnknownFieldCode(t *testing.T) {
 	}
 }
 
+func TestNewExec_NoAscii(t *testing.T) {
+	_, err := NewExec(`%Ω`)
+
+	switch {
+	case errors.Is(err, ErrAsciiRequired):
+	default:
+		t.Errorf("err = %v; want ErrAsciiRequired", err)
+	}
+}
+
 func TestExecValue_ToArguments_FCf(t *testing.T) {
 	exec, err := NewExec(`test Well%cHello %f "--location="%k`)
 	if err != nil {

@@ -383,3 +383,18 @@ Name=Browse gallery
 		t.Errorf("Action name is %s, expected: %s", actualDefault2, expectedDefault2)
 	}
 }
+
+func TestParse_AsciiViolation(t *testing.T) {
+	_, err := Parse(strings.NewReader(`
+[Desktop Entry]
+Type=Application
+Name=Firefox\tTabbed
+Actions=Gallery;Number2
+Exec=/usr/lib/firefox/firefox %u ω
+`))
+	switch {
+	case errors.Is(err, ErrAsciiRequired):
+	default:
+		t.Errorf("err = %v; want ErrAsciiRequired", err)
+	}
+}

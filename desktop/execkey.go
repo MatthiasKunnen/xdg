@@ -112,6 +112,7 @@ type FieldCodeProvider struct {
 }
 
 var (
+	ErrAsciiRequired           = errors.New("must be ascii")
 	ErrCharacterMustBeQuoted   = errors.New("character must be quoted")
 	ErrEscapeOutsideQuotes     = errors.New("invalid character escaped")
 	ErrFieldCodeIncomplete     = errors.New("unexpected end of string, field code not completed")
@@ -130,7 +131,7 @@ func NewExec(value string) (ExecValue, error) {
 	}
 
 	if !isAsciiNoControl(value) {
-		return nil, fmt.Errorf("value of type string must be ASCII. Got: %s", value)
+		return nil, fmt.Errorf("exec value %w. Got: \"%s\"", ErrAsciiRequired, value)
 	}
 
 	value, err := unescapeString(value)
