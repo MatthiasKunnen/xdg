@@ -35,6 +35,11 @@ func (e ExecValue) CanOpenFiles() bool {
 	return e.HasAnyFieldCode([]byte{'f', 'F', 'u', 'U'})
 }
 
+// CanOpenUrls returns true if opening URL(s) is explicitly supported.
+func (e ExecValue) CanOpenUrls() bool {
+	return e.HasAnyFieldCode([]byte{'u', 'U'})
+}
+
 // HasAnyFieldCode returns true if any of the given field codes are present.
 // If no field codes are given, false is returned.
 func (e ExecValue) HasAnyFieldCode(fieldCodes []byte) bool {
