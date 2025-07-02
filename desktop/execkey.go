@@ -3,6 +3,7 @@ package desktop
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -31,14 +32,36 @@ type ExecValue [][]execArgPart
 
 // CanOpenFiles returns true if opening local file(s) is explicitly supported.
 func (e ExecValue) CanOpenFiles() bool {
+	return e.HasAnyFieldCode([]byte{'f', 'F', 'u', 'U'})
+}
+
+// HasAnyFieldCode returns true if any of the given field codes are present.
+// If no field codes are given, false is returned.
+func (e ExecValue) HasAnyFieldCode(fieldCodes []byte) bool {
+	if len(fieldCodes) == 0 {
+		return false
+	}
+
 	for _, parts := range e {
 		for _, part := range parts {
 			if !part.isFieldCode {
 				continue
 			}
 
-			switch part.arg[0] {
-			case 'f', 'F', 'u', 'U':
+			// Field codes cannot be more than a single letter according to the spec.
+			// This is enforced elsewhere, these are just sanity checks.
+			if len(part.arg) == 0 {
+				panic("ExecValue with fieldCode: true, empty arg")
+			}
+
+			if len(part.arg) > 1 {
+				panic(fmt.Sprintf(
+					"ExecValue with fieldCode: true, arg longer than 1 character: %s",
+					part.arg,
+				))
+			}
+
+			if slices.Contains(fieldCodes, part.arg[0]) {
 				return true
 			}
 		}
@@ -51,6 +74,8 @@ func (e ExecValue) CanOpenFiles() bool {
 // If isFieldCode is true, arg represents a field code without the "%".
 // Otherwise, arg is a plain argument that will not be expanded.
 type execArgPart struct {
+	// if isFieldCode is true, a single letter field code.
+	// if isFieldCode is false, a part of a program argument or the complete argument.
 	arg         string
 	isFieldCode bool
 }

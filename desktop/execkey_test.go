@@ -2,6 +2,8 @@ package desktop
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"slices"
 	"testing"
 )
@@ -243,4 +245,45 @@ func TestExecValue_CanOpenFiles(t *testing.T) {
 	test(`test %k %u`, true)
 	test(`test "%f"`, false)
 	test(`test %k`, false)
+}
+
+func TestExecValue_HasAnyFieldCode(t *testing.T) {
+	test := func(value string, fieldCodes string, expected bool) {
+		exec, err := NewExec(value)
+		if err != nil {
+			t.Fatalf("Unexpected error creating exec value: %v", err)
+		}
+
+		fcs := []byte(fieldCodes)
+		if exec.HasAnyFieldCode(fcs) != expected {
+			t.Errorf(
+				"\"%s\" HasAnyFieldCode(%q) = %v; want %v",
+				value,
+				fcs,
+				!expected,
+				expected,
+			)
+		}
+	}
+
+	test(`test %f`, "f", true)
+	test(`test %f`, "u", false)
+	test(`test %u`, "f", false)
+	test(`test %k %u`, "ku", true)
+	test(`test %k %U`, "Uk", true)
+	test(`test "%f"`, "f", false)
+	test(`test %f`, "", false)
+	test(`test %k`, "k", true)
+	test(`test %kilo`, "k", true)
+}
+
+// Test if an Exec value has particular field codes.
+func ExampleExecValue_HasAnyFieldCode() {
+	exec, err := NewExec("/usr/lib/firefox/firefox %u --private")
+	if err != nil {
+		log.Fatalf("Unexpected error creating exec value: %v", err)
+	}
+
+	fmt.Println(exec.HasAnyFieldCode([]byte("uf")))
+	// Output: true
 }
