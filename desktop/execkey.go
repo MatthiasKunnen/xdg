@@ -121,14 +121,17 @@ func NewExec(value string) (ExecValue, error) {
 	containsFileFieldCode := false
 	escaped := false
 
-	addPart := func(part string, isFieldCode bool) {
+	appendArgPart := func() {
+		part := nextArg.String()
 		if part == "" {
 			return
 		}
+
 		argParts = append(argParts, execArgPart{
 			arg:         part,
-			isFieldCode: isFieldCode,
+			isFieldCode: false,
 		})
+		nextArg.Reset()
 	}
 
 	for i := 0; i < len(value); i++ {
@@ -153,8 +156,7 @@ func NewExec(value string) (ExecValue, error) {
 			escaped = true
 			continue
 		case '"':
-			addPart(nextArg.String(), false)
-			nextArg.Reset()
+			appendArgPart()
 			quoted = !quoted
 		case ' ':
 			switch {
@@ -163,8 +165,7 @@ func NewExec(value string) (ExecValue, error) {
 			case nextArg.Len() == 0 && len(argParts) == 0:
 				continue
 			default:
-				addPart(nextArg.String(), false)
-				nextArg.Reset()
+				appendArgPart()
 				result = append(result, argParts)
 				argParts = nil
 			}
@@ -209,9 +210,11 @@ func NewExec(value string) (ExecValue, error) {
 				i++
 
 				if addFieldCode {
-					addPart(nextArg.String(), false)
-					nextArg.Reset()
-					addPart(string(fieldCode), true)
+					appendArgPart()
+					argParts = append(argParts, execArgPart{
+						arg:         string(fieldCode),
+						isFieldCode: true,
+					})
 				}
 			}
 		case '\t', '\n', '\'', '>', '<', '~', '|', '&', ';', '$', '*', '?', '#',
@@ -233,7 +236,7 @@ func NewExec(value string) (ExecValue, error) {
 		return nil, fmt.Errorf("parseExec: %w", ErrQuoteNotCompleted)
 	}
 
-	addPart(nextArg.String(), false)
+	appendArgPart()
 	if len(argParts) > 0 {
 		result = append(result, argParts)
 	}
