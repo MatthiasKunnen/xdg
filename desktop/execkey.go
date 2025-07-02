@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// ExecValue is two-dimensional representation of the Exec key.
+// ExecValue is two-dimensional representation of the [Exec key].
 // This is required to meet the specification's criteria that field codes must not
 // be used in quotes while they can be used outside of them.
 //
@@ -25,8 +25,11 @@ import (
 //	]
 //
 // %F, %U, and %i will always be in separate arguments as the spec dictates.
+//
+// [Exec key]: https://specifications.freedesktop.org/desktop-entry-spec/latest/exec-variables.html
 type ExecValue [][]execArgPart
 
+// CanOpenFiles returns true if opening local file(s) is explicitly supported.
 func (e ExecValue) CanOpenFiles() bool {
 	for _, parts := range e {
 		for _, part := range parts {
@@ -44,6 +47,9 @@ func (e ExecValue) CanOpenFiles() bool {
 	return false
 }
 
+// execArgPart represents the parts of the Exec key.
+// If isFieldCode is true, arg represents a field code without the "%".
+// Otherwise, arg is a plain argument that will not be expanded.
 type execArgPart struct {
 	arg         string
 	isFieldCode bool
