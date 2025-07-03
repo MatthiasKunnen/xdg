@@ -132,7 +132,7 @@ func (s *Subclass) BroaderOnce(mime string) []string {
 		return []string{mimeOctet}
 	case strings.HasPrefix(mime, "text/"):
 		return []string{mimeTextPlain}
-	case !strings.HasPrefix(mime, "inode/"):
+	case isStreamable(mime):
 		return []string{mimeOctet}
 	default:
 		return nil
@@ -184,11 +184,11 @@ func (s *Subclass) BroaderDfs(mime string) []string {
 	}
 	if _, ok := visited[mimeOctet]; !ok {
 		switch {
-		case mime != mimeOctet && !strings.HasPrefix(mime, "inode/"):
+		case mime != mimeOctet && isStreamable(mime):
 			result = append(result, mimeOctet)
 		default:
 			for _, item := range result {
-				if !strings.HasPrefix(item, "inode/") {
+				if isStreamable(item) {
 					result = append(result, mimeOctet)
 					break
 				}
@@ -197,4 +197,15 @@ func (s *Subclass) BroaderDfs(mime string) []string {
 	}
 
 	return result
+}
+
+func isStreamable(mime string) bool {
+	switch {
+	case strings.HasPrefix(mime, "inode/"):
+		return false
+	case strings.HasPrefix(mime, "x-scheme-handler/"):
+		return false
+	default:
+		return true
+	}
 }

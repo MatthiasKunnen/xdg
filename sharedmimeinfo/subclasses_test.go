@@ -31,6 +31,41 @@ func ExampleLoadFromReaders() {
 	// Output: application/xml, text/plain, application/octet-stream
 }
 
+func TestSubclass_BroaderOnce(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(`image/svg+xml application/xml
+application/xml application/xml2
+application/xml2 text/xml`),
+		strings.NewReader("image/svg+xml application/svg"),
+		strings.NewReader("x-scheme-handler/rstp1 x-scheme-handler/rstp2"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type testCase struct {
+		input    string
+		expected []string
+	}
+
+	cases := []testCase{
+		{"application/octet-stream", nil},
+		{"application/binary", []string{"application/octet-stream"}},
+		{"text/plain", []string{"application/octet-stream"}},
+		{"inode/fifo", nil},
+		{"image/svg+xml", []string{"application/xml", "application/svg"}},
+		{"x-scheme-handler/rstp1", []string{"x-scheme-handler/rstp2"}},
+		{"x-scheme-handler/http", nil},
+	}
+
+	for _, c := range cases {
+		got := s.BroaderOnce(c.input)
+		if diff := cmp.Diff(c.expected, got); diff != "" {
+			t.Errorf("BroaderOnce(%s) mismatch (-want +got):\n%s", c.input, diff)
+		}
+	}
+}
+
 func TestSubclass_BroaderDfs(t *testing.T) {
 	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
 		strings.NewReader(`image/svg+xml application/xml
@@ -185,6 +220,21 @@ func TestSubclass_BroaderDfs_octetStreamOnly(t *testing.T) {
 
 	want := []string{}
 	got := s.BroaderDfs("application/octet-stream")
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestSubclass_BroaderDfs_schemeHandler(t *testing.T) {
+	s, err := sharedmimeinfo.LoadFromReaders([]io.Reader{
+		strings.NewReader(`text/foo application/bar`),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{}
+	got := s.BroaderDfs("x-scheme-handler/http")
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("BroaderDfs() mismatch (-want +got):\n%s", diff)
 	}
